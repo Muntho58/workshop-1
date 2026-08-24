@@ -1,4 +1,56 @@
 //section1
-function login(inputUser, inputPass, role, isActive, age){ if (inputUser !== "admin" || inputPass !== "ce385pass") {
-    return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (401)";
-  }}
+function login(inputUser, inputPass, role, isActive, age) {
+    if (inputUser !== "admin" || inputPass !== "ce385pass") {
+        return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (401)";
+    }
+
+    if (isActive === false) {
+        return "บัญชีนี้ถูกระงับการใช้งาน (403)";
+    }
+
+    if (age < 18) {
+        return "อายุไม่ถึงเกณฑ์";
+    }
+
+    if (role === "อาจารย์") {
+        return "เข้าสู่ระบบสำเร็จ (สิทธิ์ผู้ดูแล) (200)";
+    } else if (role === "นักศึกษา") {
+        return "เข้าสู่ระบบสำเร็จ (สิทธิ์ทั่วไป) (200)";
+    } else {
+        return "Role ไม่ถูกต้อง";
+    }
+}
+
+//section2
+// 1. สำเร็จ (อาจารย์)
+console.log(login("admin", "ce385pass", "อาจารย์", true, 25));
+
+
+// 2. สำเร็จ (นักศึกษา)
+console.log(login("admin", "ce385pass", "นักศึกษา", true, 20));
+
+
+// 3. รหัสผ่านผิด
+console.log(login("admin", "wrongpass", "อาจารย์", true, 25));
+
+
+// 4. ชื่อผู้ใช้ผิด
+console.log(login("wronguser", "ce385pass", "นักศึกษา", true, 25));
+
+
+// 5. บัญชีถูกระงับ
+console.log(login("admin", "ce385pass", "นักศึกษา", false, 25));
+
+
+// 6. อายุไม่ถึง
+console.log(login("admin", "ce385pass", "นักศึกษา", true, 15));
+
+//section3  ตอบคำถามท้ายข้อ เขียนเป็น comment ในไฟล์
+//1.ทำไมต้องตรวจ username/password ก่อน ตรวจ role
+//การตรวจสอบตัวตนควรจะเป็นอันดับแรก ถ้า username/password ไม่ถูก ก็ไม่ควรไปตรวจ
+//role ต่อ เนื่องจาก role เป็นสิทธิ์การเข้าถึง ที่ใช่ได้เมื่อผู้ใช้ยืนยันตัวตนสำเร็จ
+
+//2.ถ้าย้ายการตรวจ "อายุไม่ถึงเกณฑ์" ขึ้นไปเป็นข้อแรก จะเกิดปัญหาอะไร (คิดในแง่ความปลอดภัย: เราจะบอกอะไรกับคนที่ยังไม่ได้พิสูจน์ตัวตน)
+//ระบบจะเปิดเผยข้อมูลว่า อายุไม่ถึงเกณฑ์ ห้กับคนที่ยังไม่ได้
+//พิสูจน์ตัวตนด้วย username/password ก่อนซึ่งเป็นการรั่วไหลข้อมูล
+//และอาจถูกโจมตีระบบได้ ดังนั้นควรตรวจสอบตัวตนก่อน แล้วค่อยไปตรวจเงื่อนไขอื่น๐ เพื่อความปลอดภัย
